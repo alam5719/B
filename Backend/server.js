@@ -9,13 +9,18 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Connect to MongoDB (Local)
-mongoose.connect("mongodb://localhost:27017/apple_store", {
+// Connect to MongoDB
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/apple_store";
+
+mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
 .then(() => console.log("✅ Connected to MongoDB"))
-.catch((err) => console.error("❌ MongoDB connection error:", err));
+.catch((err) => {
+  console.error("❌ MongoDB connection error:", err);
+  process.exit(1); // Exit if cannot connect to database
+});
 
 // Routes
 app.use('/api/tags', tagsRouter);
